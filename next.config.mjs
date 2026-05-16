@@ -12,7 +12,6 @@ const nextConfig = {
 
   basePath: '/TK-Mondal-Services',
 
-  assetPrefix: '/TK-Mondal-Services/',
 }
 
 export default nextConfig
