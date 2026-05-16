@@ -1,17 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  output: 'export',
+
+  trailingSlash: true,
 
   images: {
     unoptimized: true,
   },
 
-  output: 'export',
-
   basePath: '/TK-Mondal-Services',
-
 }
 
 export default nextConfig
