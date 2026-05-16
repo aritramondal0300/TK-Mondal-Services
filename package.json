@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-  "build": "next build",
-  "deploy": "gh-pages -d out",
-  "lint": "eslint ."
+    "build": "next build && next export",
+    "deploy": "gh-pages -d out",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
