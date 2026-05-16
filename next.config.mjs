@@ -2,13 +2,13 @@
 const nextConfig = {
   output: 'export',
 
+  basePath: '/TK-Mondal-Services',
+
   trailingSlash: true,
 
   images: {
     unoptimized: true,
   },
-
-  basePath: '/TK-Mondal-Services',
 }
 
 export default nextConfig
