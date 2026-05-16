@@ -1,14 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-
   basePath: '/TK-Mondal-Services',
-
-  trailingSlash: true,
-
+  assetPrefix: '/TK-Mondal-Services/',
   images: {
     unoptimized: true,
   },
-}
+};
 
-export default nextConfig
+module.exports = nextConfig;
