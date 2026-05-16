@@ -3,9 +3,16 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+
   images: {
     unoptimized: true,
   },
+
+  output: 'export',
+
+  basePath: '/TK-Mondal-Services',
+
+  assetPrefix: '/TK-Mondal-Services/',
 }
 
 export default nextConfig
