@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
-import { Car, User, Sun, Moon, Menu } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Car, User, Sun, Moon, Menu, LogOut, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface HeaderProps {
@@ -12,10 +13,27 @@ interface HeaderProps {
 export function Header({ onToggleSidebar }: HeaderProps) {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      const res = await fetch("/api/logout", { method: "POST" });
+      if (res.ok) {
+        router.push("/login");
+        router.refresh();
+      }
+    } catch (err) {
+      console.error("Logout failed:", err);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-card/85 backdrop-blur-md shadow-xs transition-colors duration-300">
@@ -61,8 +79,8 @@ export function Header({ onToggleSidebar }: HeaderProps) {
             )}
           </Button>
 
-          {/* User Profile Info */}
-          <div className="flex items-center gap-2.5 border-l border-border pl-3 sm:pl-4 ml-1">
+          {/* User Profile Info & Logout */}
+          <div className="flex items-center gap-2 border-l border-border pl-3 sm:pl-4 ml-1">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary ring-2 ring-primary/10 shadow-inner">
               <img
                 src="https://api.dicebear.com/9.x/initials/svg?seed=TKM&backgroundColor=0D8ABC&color=FFFFFF"
@@ -70,9 +88,25 @@ export function Header({ onToggleSidebar }: HeaderProps) {
                 className="h-8 w-8 rounded-full object-cover"
               />
             </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors ml-1"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              aria-label="Log out"
+              title="Log out"
+            >
+              {isLoggingOut ? (
+                <Loader2 className="h-4.5 w-4.5 animate-spin" />
+              ) : (
+                <LogOut className="h-4.5 w-4.5" />
+              )}
+            </Button>
           </div>
         </div>
       </div>
     </header>
   );
 }
+
