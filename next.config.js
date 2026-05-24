@@ -1,19 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-
-  basePath: '/TK-Mondal-Services',
-  assetPrefix: '/TK-Mondal-Services/',
-
   images: {
     unoptimized: true,
   },
-
-  experimental: {
-    turbo: {
-      rules: {},
-    },
-  },
 };
+
+if (process.env.NODE_ENV === 'development') {
+  import('@cloudflare/next-on-pages/next-dev').then(({ setupDevPlatform }) => {
+    setupDevPlatform();
+  }).catch(e => {
+    console.error('Failed to setup Cloudflare Dev Platform:', e);
+  });
+}
 
 module.exports = nextConfig;
