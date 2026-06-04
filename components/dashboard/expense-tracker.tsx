@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, IndianRupee, Trash2, TrendingUp, Calendar, Wrench, Settings, ShieldCheck, Package, CircleDot, ChevronRight } from "lucide-react";
+import { Plus, IndianRupee, Trash2, TrendingDown, Calendar, Wrench, Settings, ShieldCheck, Package, CircleDot, ChevronRight, Fuel, User, Home, CreditCard } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,44 +13,43 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-export interface IncomeEntry {
+export interface ExpenseEntry {
   id: string;
   description: string;
   amount: number;
   category: string;
   date: string;
-  carId?: string;
 }
 
-interface IncomeTrackerProps {
-  income: IncomeEntry[];
-  onAddIncome: (entry: Omit<IncomeEntry, "id">) => void;
-  onDeleteIncome: (id: string) => void;
+interface ExpenseTrackerProps {
+  expenses: ExpenseEntry[];
+  onAddExpense: (entry: Omit<ExpenseEntry, "id">) => void;
+  onDeleteExpense: (id: string) => void;
 }
 
-export function IncomeTracker({ income, onAddIncome, onDeleteIncome }: IncomeTrackerProps) {
+export function ExpenseTracker({ expenses, onAddExpense, onDeleteExpense }: ExpenseTrackerProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newEntry, setNewEntry] = useState({
     description: "",
     amount: 0,
-    category: "Service",
+    category: "Parts Purchase",
     date: new Date().toISOString().split("T")[0],
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onAddIncome(newEntry);
+    onAddExpense(newEntry);
     setNewEntry({
       description: "",
       amount: 0,
-      category: "Service",
+      category: "Parts Purchase",
       date: new Date().toISOString().split("T")[0],
     });
     setIsDialogOpen(false);
   };
 
-  const totalIncome = income.reduce((sum, entry) => sum + entry.amount, 0);
-  const thisMonthIncome = income
+  const totalExpense = expenses.reduce((sum, entry) => sum + entry.amount, 0);
+  const thisMonthExpense = expenses
     .filter((entry) => {
       const entryDate = new Date(entry.date);
       const now = new Date();
@@ -61,26 +60,25 @@ export function IncomeTracker({ income, onAddIncome, onDeleteIncome }: IncomeTra
   // Helper for Category Icons and Styles
   const getCategoryConfig = (category: string) => {
     switch (category) {
-      case "Service":
-        return {
-          icon: Wrench,
-          colorClass: "text-emerald-600 bg-emerald-500/10 border-emerald-500/20 dark:text-emerald-400 dark:bg-emerald-500/20",
-        };
-      case "Repair":
-        return {
-          icon: Settings,
-          colorClass: "text-amber-600 bg-amber-500/10 border-amber-500/20 dark:text-amber-400 dark:bg-amber-500/20",
-        };
-      case "Consultation":
-        return {
-          icon: ShieldCheck,
-          colorClass: "text-violet-600 bg-violet-500/10 border-violet-500/20 dark:text-violet-400 dark:bg-violet-500/20",
-        };
-      case "Parts":
-      case "Parts Sale":
+      case "Parts Purchase":
         return {
           icon: Package,
+          colorClass: "text-amber-600 bg-amber-500/10 border-amber-500/20 dark:text-amber-400 dark:bg-amber-500/20",
+        };
+      case "Fuel":
+        return {
+          icon: Fuel,
+          colorClass: "text-orange-600 bg-orange-500/10 border-orange-500/20 dark:text-orange-400 dark:bg-orange-500/20",
+        };
+      case "Salary/Wages":
+        return {
+          icon: User,
           colorClass: "text-blue-600 bg-blue-500/10 border-blue-500/20 dark:text-blue-400 dark:bg-blue-500/20",
+        };
+      case "Rent/Utilities":
+        return {
+          icon: Home,
+          colorClass: "text-violet-600 bg-violet-500/10 border-violet-500/20 dark:text-violet-400 dark:bg-violet-500/20",
         };
       default:
         return {
@@ -94,18 +92,18 @@ export function IncomeTracker({ income, onAddIncome, onDeleteIncome }: IncomeTra
     <Card className="bg-card border-border shadow-xs hover:shadow-md transition-all duration-300">
       <CardHeader className="flex flex-row items-center justify-between pb-4">
         <div>
-          <CardTitle className="text-foreground text-lg font-bold tracking-tight">Income Tracker</CardTitle>
+          <CardTitle className="text-foreground text-lg font-bold tracking-tight">Expense Tracker</CardTitle>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-xs flex items-center gap-1">
+            <Button size="sm" variant="destructive" className="bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors shadow-xs flex items-center gap-1">
               <Plus className="h-4 w-4" />
-              Add Income
+              Add Expense
             </Button>
           </DialogTrigger>
           <DialogContent className="bg-card border-border max-w-md max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-foreground text-xl font-bold">Add Income Entry</DialogTitle>
+              <DialogTitle className="text-foreground text-xl font-bold">Add Expense Entry</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4 mt-2">
               <div className="space-y-1">
@@ -113,7 +111,7 @@ export function IncomeTracker({ income, onAddIncome, onDeleteIncome }: IncomeTra
                 <Input
                   value={newEntry.description}
                   onChange={(e) => setNewEntry({ ...newEntry, description: e.target.value })}
-                  placeholder="e.g., Oil change service - Swift Dzire"
+                  placeholder="e.g., Engine oil stock purchase"
                   className="bg-input border-border text-foreground focus:ring-1 focus:ring-primary focus:border-primary"
                   required
                 />
@@ -125,7 +123,7 @@ export function IncomeTracker({ income, onAddIncome, onDeleteIncome }: IncomeTra
                     type="number"
                     value={newEntry.amount || ""}
                     onChange={(e) => setNewEntry({ ...newEntry, amount: parseInt(e.target.value) || 0 })}
-                    placeholder="e.g., 500"
+                    placeholder="e.g., 2500"
                     className="bg-input border-border text-foreground focus:ring-1 focus:ring-primary focus:border-primary"
                     required
                   />
@@ -137,10 +135,10 @@ export function IncomeTracker({ income, onAddIncome, onDeleteIncome }: IncomeTra
                     onChange={(e) => setNewEntry({ ...newEntry, category: e.target.value })}
                     className="w-full rounded-md border border-border bg-input px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:border-primary focus:outline-hidden"
                   >
-                    <option value="Service">Service</option>
-                    <option value="Repair">Repair</option>
-                    <option value="Consultation">Consultation</option>
-                    <option value="Parts">Parts Sale</option>
+                    <option value="Parts Purchase">Parts Purchase</option>
+                    <option value="Fuel">Fuel</option>
+                    <option value="Salary/Wages">Salary/Wages</option>
+                    <option value="Rent/Utilities">Rent/Utilities</option>
                     <option value="Other">Other</option>
                   </select>
                 </div>
@@ -155,44 +153,44 @@ export function IncomeTracker({ income, onAddIncome, onDeleteIncome }: IncomeTra
                   required
                 />
               </div>
-              <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 mt-2 py-2.5 transition-colors font-medium">
-                Add Earnings Record
+              <Button type="submit" variant="destructive" className="w-full bg-destructive text-destructive-foreground hover:bg-destructive/90 mt-2 py-2.5 transition-colors font-medium">
+                Add Expense Record
               </Button>
             </form>
           </DialogContent>
         </Dialog>
       </CardHeader>
       <CardContent>
-        {/* Earnings Stats Bar */}
+        {/* Expense Stats Bar */}
         <div className="grid gap-3 grid-cols-2 mb-6">
           <div className="relative overflow-hidden flex items-center justify-between rounded-xl border border-border bg-secondary/10 p-3 sm:p-4">
             <div className="space-y-0.5 min-w-0">
-              <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground truncate block">Total Income</span>
-              <p className="text-lg sm:text-2xl font-black text-primary tracking-tight truncate">₹{totalIncome.toLocaleString("en-IN")}</p>
+              <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground truncate block">Total Expenses</span>
+              <p className="text-lg sm:text-2xl font-black text-rose-600 dark:text-rose-400 tracking-tight truncate">₹{totalExpense.toLocaleString("en-IN")}</p>
             </div>
-            <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary shadow-xs">
-              <TrendingUp className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400 shadow-xs">
+              <TrendingDown className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
             </div>
           </div>
           <div className="relative overflow-hidden flex items-center justify-between rounded-xl border border-border bg-secondary/10 p-3 sm:p-4">
             <div className="space-y-0.5 min-w-0">
               <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground truncate block">This Month</span>
-              <p className="text-lg sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight truncate">₹{thisMonthIncome.toLocaleString("en-IN")}</p>
+              <p className="text-lg sm:text-2xl font-black text-rose-600 dark:text-rose-400 tracking-tight truncate">₹{thisMonthExpense.toLocaleString("en-IN")}</p>
             </div>
-            <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 shadow-xs">
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400 shadow-xs">
               <Calendar className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
             </div>
           </div>
         </div>
 
-        {income.length === 0 ? (
+        {expenses.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center rounded-xl border border-dashed border-border bg-secondary/10 p-6">
             <IndianRupee className="mb-4 h-12 w-12 text-muted-foreground/30 animate-pulse" />
-            <h3 className="text-sm font-semibold text-foreground">No earnings logged</h3>
+            <h3 className="text-sm font-semibold text-foreground">No expenses logged</h3>
           </div>
         ) : (
           <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
-            {income.map((entry) => {
+            {expenses.map((entry) => {
               const categoryConfig = getCategoryConfig(entry.category);
               const CatIcon = categoryConfig.icon;
 
@@ -221,14 +219,14 @@ export function IncomeTracker({ income, onAddIncome, onDeleteIncome }: IncomeTra
                     </div>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400 text-sm">
-                      +₹{entry.amount.toLocaleString("en-IN")}
+                    <span className="font-bold text-rose-600 dark:text-rose-400 text-sm">
+                      -₹{entry.amount.toLocaleString("en-IN")}
                     </span>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
-                      onClick={() => onDeleteIncome(entry.id)}
+                      onClick={() => onDeleteExpense(entry.id)}
                       aria-label="Delete entry"
                     >
                       <Trash2 className="h-4 w-4" />
